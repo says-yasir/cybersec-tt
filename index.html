@@ -4,11 +4,345 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yasir's Cyber Security Time Table</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Yasir's Cyber Security Timetable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .sticky-header.scrolled {
+            padding: 0.75rem 2rem;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .sticky-header .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .sticky-header.scrolled .logo {
+            width: 40px;
+            height: 40px;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-text .name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-text .subtext {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 2rem 2rem;
+        }
+
+        .center-content {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .center-content .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 5px solid #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .center-content .logo:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .center-content .name {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .center-content .subtext {
+            font-size: 1.3rem;
+            color: #666;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .dropdown-container {
+            display: grid;
+            gap: 1.5rem;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .dropdown {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .dropdown-btn {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .dropdown-btn:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a3f8f 100%);
+        }
+
+        .dropdown-btn:active {
+            transform: scale(0.98);
+        }
+
+        .dropdown-btn span:first-child {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .dropdown-btn span:first-child::before {
+            content: "📅";
+            font-size: 1.3rem;
+        }
+
+        .arrow {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .dropdown.active .arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+            background: white;
+        }
+
+        .dropdown.active .dropdown-content {
+            max-height: 1000px;
+            padding: 2rem;
+        }
+
+        .dropdown-content p {
+            margin-bottom: 1rem;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .dropdown-content p:first-child {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 1.05rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .dropdown-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem 2rem;
+            margin-top: 4rem;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-content p {
+            margin-bottom: 0.75rem;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .footer-content p:first-child {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .social-icon:active {
+            transform: translateY(-1px) scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .sticky-header {
+                padding: 1rem;
+            }
+
+            .header-text .name {
+                font-size: 1.2rem;
+            }
+
+            .header-text .subtext {
+                font-size: 0.8rem;
+            }
+
+            .center-content .name {
+                font-size: 2rem;
+            }
+
+            .center-content .subtext {
+                font-size: 1rem;
+            }
+
+            .dropdown-btn {
+                padding: 1.25rem 1.5rem;
+                font-size: 1rem;
+            }
+
+            .dropdown.active .dropdown-content {
+                padding: 1.5rem;
+            }
+
+            .container {
+                padding: 90px 1rem 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .center-content .logo {
+                width: 90px;
+                height: 90px;
+            }
+
+            .social-icons {
+                gap: 1rem;
+            }
+
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    
     <div class="sticky-header">
         <img src="l.png" alt="Logo" class="logo">
         <div class="header-text">
@@ -16,18 +350,19 @@
             <p class="subtext">Cyber Security Timetable</p>
         </div>
     </div>
+
     <div class="container">
         <div class="center-content">
             <img src="l.png" alt="logo" class="logo">
             <h1 class="name">Yasir</h1>
-            <h2 class="subtext">Cyber Security Time Table</h2>
+            <h2 class="subtext">Cyber Security Timetable</h2>
         </div>
+
         <div class="dropdown-container">
-            <!-- Monday -->
             <div class="dropdown">
                 <div class="dropdown-btn">
                     <span>Monday: Python Programming</span>
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-content">
                     <p>Focus: Learning the basics of Python, which is widely used in cybersecurity.</p>
@@ -40,7 +375,7 @@
             <div class="dropdown">
                 <div class="dropdown-btn">
                     <span>Tuesday: Networking Fundamentals</span>
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-content">
                     <p>Focus: Understand networking basics that are crucial for cybersecurity.</p>
@@ -50,11 +385,10 @@
                 </div>
             </div>
 
-   
             <div class="dropdown">
                 <div class="dropdown-btn">
                     <span>Wednesday: Web Development (HTML, CSS, and Basic JavaScript)</span>
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-content">
                     <p>Focus: Learn basic web development to understand how websites work.</p>
@@ -64,11 +398,10 @@
                 </div>
             </div>
 
-          
             <div class="dropdown">
                 <div class="dropdown-btn">
                     <span>Thursday: Operating Systems (Linux Focus)</span>
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-content">
                     <p>Focus: Familiarize yourself with Linux, an essential OS in cybersecurity.</p>
@@ -81,7 +414,7 @@
             <div class="dropdown">
                 <div class="dropdown-btn">
                     <span>Friday: Networking Tools and Security Basics</span>
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-content">
                     <p>Focus: Dive deeper into networking and basic security tools.</p>
@@ -94,7 +427,7 @@
             <div class="dropdown">
                 <div class="dropdown-btn">
                     <span>Saturday: Web Security & Python Scripting</span>
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-content">
                     <p>Focus: Combine web development and Python to learn about security.</p>
@@ -107,7 +440,7 @@
             <div class="dropdown">
                 <div class="dropdown-btn">
                     <span>Sunday: Review and Project Day</span>
-                    <span class="arrow">&#x25BC;</span>
+                    <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-content">
                     <p>Focus: Consolidate your week's learning by reviewing or working on small projects.</p>
@@ -117,27 +450,67 @@
             </div>
         </div>
     </div>
+
     <footer class="footer">
         <div class="footer-content">
             <p>&copy; 2024 Yasir Iqbal. All Rights Reserved.</p>
             <p>Contact: crazzyvoltz@gmail.com</p>
             <div class="social-icons">
-                <a href="https://www.tiktok.com/@says.yasir" class="social-icon" target="_blank">
+                <a href="https://www.tiktok.com/@says.yasir" class="social-icon" target="_blank" aria-label="TikTok">
                     <i class="fab fa-tiktok"></i>
                 </a>
-                <a href="https://github.com/says-yasir" class="social-icon" target="_blank">
+                <a href="https://github.com/says-yasir" class="social-icon" target="_blank" aria-label="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a href="https://www.instagram.com/says.yasir/" class="social-icon" target="_blank">
+                <a href="https://www.instagram.com/says.yasir/" class="social-icon" target="_blank" aria-label="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a href="https://discord.gg/xenith" class="social-icon" target="_blank">
+                <a href="https://discord.gg/xenith" class="social-icon" target="_blank" aria-label="Discord">
                     <i class="fab fa-discord"></i>
                 </a>
             </div>
         </div>
     </footer>
-    
-    <script src="script.js"></script>
+
+    <script>
+        // Dropdown toggle functionality
+        const dropdowns = document.querySelectorAll('.dropdown');
+        
+        dropdowns.forEach(dropdown => {
+            const btn = dropdown.querySelector('.dropdown-btn');
+            
+            btn.addEventListener('click', () => {
+                dropdown.classList.toggle('active');
+            });
+        });
+
+        // Sticky header scroll effect
+        const stickyHeader = document.querySelector('.sticky-header');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                stickyHeader.classList.add('scrolled');
+            } else {
+                stickyHeader.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scroll reveal animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        dropdowns.forEach(dropdown => {
+            dropdown.style.opacity = '0';
+            dropdown.style.transform = 'translateY(20px)';
+            dropdown.style.transition = 'all 0.6s ease';
+            observer.observe(dropdown);
+        });
+    </script>
 </body>
 </html>
